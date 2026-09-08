@@ -42,19 +42,21 @@ $$\text{Relevance Score} = \sum_{i=1}^{5} w_i \cdot s_i$$
 
 $$\text{Score} = 0.30 \cdot \text{AudienceFit} + 0.25 \cdot \text{ContentFit} + 0.20 \cdot \text{Freshness} + 0.15 \cdot \text{HistoricalFit} + 0.10 \cdot \text{SemanticOpportunity}$$
 
-Where each sub-score $s_i \in [0, 100]$:
-- **Audience Fit ($30\%$):** Semantic overlap with recent high-performing viewer demand.
-- **Content Fit ($25\%$):** Alignment with the creator's current core niche.
-- **Freshness ($20\%$):** Timeliness and relevance in the current cultural and technological climate.
-- **Historical Fit ($15\%$):** Track record of similar themes in the creator's past library.
-- **Semantic Opportunity ($10\%$):** Room for a unique, unexploited angle.
+Where each sub-score is normalized between 0 and 100:
+- **Audience Fit (30%):** Semantic overlap with recent high-performing viewer demand.
+- **Content Fit (25%):** Alignment with the creator's current core niche.
+- **Freshness (20%):** Timeliness and relevance in the current cultural and technological climate.
+- **Historical Fit (15%):** Track record of similar themes in the creator's past library.
+- **Semantic Opportunity (10%):** Room for a unique, unexploited angle.
 
 ### 2. Reliable AI Architecture
 - **LLM Provider:** Google Gemini (`gemini-2.5-flash-lite`) integrated natively via the `google-generativeai` SDK.
-- **Strict Pydantic Validation:** Every AI generation is parsed and validated against strict schemas with field-level constraints ($s_i \in [0, 100]$), with automated retries on malformed syntax.
+- **Strict Pydantic Validation:** Every AI generation is parsed and validated against strict schemas with field-level constraints (scores between 0 and 100), with automated retries on malformed syntax.
 - **State Machine Integrity:** Ideas transition through a strict state machine:
-  $$\text{Dormant} \longrightarrow \text{Reconsidering} \longrightarrow \text{Resurrected}$$
-  If an API failure occurs during generation, the transaction automatically rolls back to $\text{Dormant}$ to prevent hanging states.
+
+$$\text{Dormant} \longrightarrow \text{Reconsidering} \longrightarrow \text{Resurrected}$$
+
+If an API failure occurs during generation, the transaction automatically rolls back to `Dormant` to prevent hanging states.
 
 ### 3. Editorial-First UI Design
 We deliberately stepped away from generic "AI dashboard" tropes. Using a custom Vanilla CSS design system, we crafted an editorial research workspace with a distraction-free aesthetic, dark-mode styling, responsive radar progress bars, and progressive disclosure cards.
@@ -65,7 +67,7 @@ We deliberately stepped away from generic "AI dashboard" tropes. Using a custom 
 
 1. **Ensuring 100% Deterministic & Reliable JSON:** LLMs frequently wrap responses in markdown fences or append conversational preambles. We engineered a multi-stage parser with regex stripping and Pydantic validation that catches malformed outputs and executes a strict prompt retry when necessary.
 2. **Preventing State Corruption During Failures:** Network drops or API timeouts during the resurrection phase could leave ideas stranded in `reconsidering` status. We implemented atomic database rollback handling to preserve clean state transitions.
-3. **Designing for Zero-State & Scale:** Content creators have backlogs ranging from 5 to 500 ideas. We optimized CSV ingestion using bulk fingerprint lookups to avoid $O(N)$ database round-trips.
+3. **Designing for Zero-State & Scale:** Content creators have backlogs ranging from 5 to 500 ideas. We optimized CSV ingestion using bulk fingerprint lookups to avoid O(N) database round-trips.
 
 ---
 
