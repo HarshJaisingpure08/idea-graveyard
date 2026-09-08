@@ -1,0 +1,34 @@
+# Environment & Secrets
+.env
+.env.*
+*.env
+**/.env
+**/.env.*
+backend/.env
+
+# Virtual Environments & Python
+.venv/
+venv/
+env/
+**/.venv/
+**/venv/
+backend/.venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyc
+.pytest_cache/
+**/.pytest_cache/
+
+# Node & Frontend
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
